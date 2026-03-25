@@ -1,0 +1,120 @@
+{% extends 'analytics/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | ACLAS{% endblock %}
+
+{% block content %}
+<!-- Parallax background -->
+<div class="parallax-bg">
+  <div class="parallax-orb p-orb-1"></div>
+  <div class="parallax-orb p-orb-2"></div>
+</div>
+
+<div class="aclas-page">
+
+  <!-- Page Header -->
+  <div class="page-header fade-in-up">
+    <p class="greeting-time" id="greeting-word">Good evening</p>
+    <h1 class="page-title">{{ request.user.username }}</h1>
+    <p class="page-subtitle">Your coding analytics at a glance</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="glass-card stat-card fade-in-up delay-1">
+      <span class="stat-label">Total Events</span>
+      <span class="stat-value blue">{{ total_events }}</span>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-2">
+      <span class="stat-label">Lines Added</span>
+      <span class="stat-value green">+{{ total_additions }}</span>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-3">
+      <span class="stat-label">Lines Deleted</span>
+      <span class="stat-value red">-{{ total_deletions }}</span>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-4">
+      <span class="stat-label">Active Time</span>
+      <span class="stat-value emerald">{{ total_active_time }}</span>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-5">
+      <span class="stat-label">Idle Time</span>
+      <span class="stat-value yellow">{{ total_idle_time }}</span>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-6">
+      <span class="stat-label">Total Time</span>
+      <span class="stat-value purple">{{ total_time }}</span>
+    </div>
+  </div>
+
+  <!-- API Token Widget -->
+  <div class="glass-card token-widget fade-in-up delay-7">
+    <div class="token-widget-left">
+      <span class="token-label-small">Your ACLAS API Token</span>
+      <span class="token-value">{{ api_token }}</span>
+    </div>
+    <button class="btn-copy" data-copy="{{ api_token }}">Copy Token</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="glass-card chart-card fade-in-up delay-3">
+      <h3>Top Projects — Lines Added</h3>
+      <canvas id="projectChart" height="220"></canvas>
+    </div>
+    <div class="glass-card chart-card fade-in-up delay-4">
+      <h3>Language Distribution</h3>
+      <canvas id="languageChart" height="220"></canvas>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const projectsData  = JSON.parse('{{ projects_json|escapejs }}');
+  const languagesData = JSON.parse('{{ languages_json|escapejs }}');
+  Chart.defaults.color  = '#8a919d';
+  Chart.defaults.font.family = 'Inter';
+
+  new Chart(document.getElementById('projectChart'), {
+    type: 'bar',
+    data: {
+      labels: projectsData.map(d => d.project_name),
+      datasets: [{
+        label: 'Lines Added',
+        data: projectsData.map(d => d.lines),
+        backgroundColor: 'rgba(0, 122, 204, 0.5)',
+        borderColor:    'rgba(0, 122, 204, 0.9)',
+        borderWidth: 1, borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(64,71,81,0.3)' }, ticks: { color: '#8a919d' } },
+        x: { grid: { display: false }, ticks: { color: '#8a919d' } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('languageChart'), {
+    type: 'doughnut',
+    data: {
+      labels: languagesData.map(d => d.language),
+      datasets: [{
+        data: languagesData.map(d => d.interactions),
+        backgroundColor: ['#007acc','#238636','#8b59e7','#dbb301','#f08060','#4ec9b0'],
+        borderWidth: 0, hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '68%',
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 16 } } }
+    }
+  });
+</script>
+{% endblock %}

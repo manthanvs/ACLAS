@@ -1,0 +1,89 @@
+{% extends 'analytics/base.html' %}
+{% load static %}
+
+{% block title %}Coding Sessions | ACLAS{% endblock %}
+
+{% block content %}
+<div class="aclas-page">
+
+  <!-- Header -->
+  <div class="page-header fade-in-up">
+    <h1 class="page-title">Coding Sessions</h1>
+    <p class="page-subtitle">Last 50 telemetry events — your raw coding record</p>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar fade-in-up delay-2">
+    <select class="filter-input" id="langFilter">
+      <option value="">All Languages</option>
+      <option value="python">Python</option>
+      <option value="javascript">JavaScript</option>
+      <option value="typescript">TypeScript</option>
+      <option value="java">Java</option>
+      <option value="html">HTML</option>
+      <option value="css">CSS</option>
+    </select>
+    <input type="text" class="filter-input" id="statsSearch" placeholder="🔍  Search project, language…" style="flex:1;min-width:180px;">
+  </div>
+
+  <!-- Table Card -->
+  <div class="glass-card fade-in-up delay-3" style="overflow:hidden;">
+    <div class="table-container">
+      <table class="aclas-table" id="statsTable">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Project</th>
+            <th>Language</th>
+            <th>Lines Added</th>
+            <th>Lines Deleted</th>
+            <th>Active Time</th>
+            <th>Idle Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          <tr>
+            <td class="mono text-dim">{{ event.timestamp|date:"M d, Y H:i" }}</td>
+            <td class="mono">{{ event.project_name }}</td>
+            <td>
+              {% with lang=event.language|lower %}
+              {% if lang == "python" %}
+                <span class="badge badge-python">python</span>
+              {% elif lang == "javascript" %}
+                <span class="badge badge-js">javascript</span>
+              {% elif lang == "typescript" %}
+                <span class="badge badge-ts">typescript</span>
+              {% elif lang == "java" %}
+                <span class="badge badge-java">java</span>
+              {% else %}
+                <span class="badge badge-default">{{ event.language }}</span>
+              {% endif %}
+              {% endwith %}
+            </td>
+            <td class="text-green">+{{ event.lines_added }}</td>
+            <td class="text-red">-{{ event.lines_deleted }}</td>
+            <td class="text-dim mono">
+              {% if event.active_seconds %}
+                {% widthratio event.active_seconds 1 1 as secs %}
+                {{ event.active_seconds|default:"—" }}s
+              {% else %}—{% endif %}
+            </td>
+            <td class="text-dim mono">
+              {% if event.idle_seconds %}{{ event.idle_seconds }}s{% else %}—{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" style="text-align:center; padding:3rem; color:var(--text-dim);">
+              No coding sessions recorded yet. Start typing in VS Code!
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

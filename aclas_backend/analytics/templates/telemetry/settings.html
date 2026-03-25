@@ -1,0 +1,131 @@
+{% extends 'analytics/base.html' %}
+{% load static %}
+
+{% block title %}Settings | ACLAS{% endblock %}
+
+{% block content %}
+<div class="aclas-page">
+
+  <!-- Header -->
+  <div class="page-header fade-in-up">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-subtitle">Manage your profile and API access</p>
+  </div>
+
+  <div class="settings-grid">
+
+    <!-- LEFT COLUMN -->
+    <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+      <!-- Profile Card -->
+      <div class="glass-card section-card fade-in-up delay-1">
+        <h3 class="section-title">Profile</h3>
+        <form method="POST" action="{% url 'settings' %}">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Display Name</label>
+              <input type="text" name="display_name" class="form-control"
+                     value="{{ request.user.username }}" placeholder="Your display name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Language</label>
+              <select name="preferred_language" class="form-control filter-input" style="width:100%;padding:10px 14px;">
+                <option value="">— Select language —</option>
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="java">Java</option>
+                <option value="go">Go</option>
+                <option value="rust">Rust</option>
+                <option value="cpp">C++</option>
+              </select>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Account Info Card -->
+      <div class="glass-card section-card fade-in-up delay-2">
+        <h3 class="section-title">Account Info</h3>
+        <div class="account-info-row">
+          <span class="account-info-key">Email</span>
+          <span class="account-info-val">{{ request.user.email }}</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-key">Username</span>
+          <span class="account-info-val">{{ request.user.username }}</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-key">Member since</span>
+          <span class="account-info-val">{{ request.user.date_joined|date:"M d, Y" }}</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-key">Last active</span>
+          <span class="account-info-val">{{ request.user.last_login|date:"M d, Y H:i" }}</span>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="glass-card section-card danger-section fade-in-up delay-3">
+        <h3 class="section-title danger-title">Danger Zone</h3>
+        <p style="font-size:0.82rem;color:var(--text-dim);margin-bottom:1rem;">
+          Once you delete your account, all of your data will be permanently removed.
+        </p>
+        <button class="btn btn-danger" onclick="return confirm('Are you sure? This cannot be undone.')">
+          Delete Account
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+      <!-- API Token Card -->
+      <div class="glass-card section-card fade-in-up delay-2">
+        <h3 class="section-title">API Token</h3>
+        <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:1rem;">
+          Use this token to connect your VS Code extension to ACLAS.
+        </p>
+        <div class="token-block">{{ api_token }}</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+          <button class="btn btn-ghost btn-full" data-copy="{{ api_token }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Token
+          </button>
+        </div>
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+          <p style="font-size:0.75rem;color:var(--text-dim);">
+            In VS Code, press <kbd style="background:var(--surface-top);padding:1px 5px;border-radius:3px;font-family:var(--font-mono);font-size:0.72rem;">Ctrl+Shift+P</kbd> → <strong style="color:var(--text);">ACLAS: Enter API Token</strong>
+          </p>
+        </div>
+      </div>
+
+      <!-- Plugin Info Card -->
+      <div class="glass-card section-card fade-in-up delay-3">
+        <h3 class="section-title">Plugin Connection</h3>
+        <div class="account-info-row">
+          <span class="account-info-key">Server URL</span>
+          <span class="account-info-val" style="font-size:0.7rem;">localhost:8000</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-key">Heartbeat interval</span>
+          <span class="account-info-val">30 seconds</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-key">Idle threshold</span>
+          <span class="account-info-val">15 minutes</span>
+        </div>
+        <div class="account-info-row">
+          <span class="account-info-key">Idle warning</span>
+          <span class="account-info-val">2 min (4 skips)</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
