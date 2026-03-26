@@ -213,4 +213,4 @@ Content-Type: application/json
 
 ## 📄 License
 
-MIT © [manthanvs](https://github.com/manthanvs)
+© [manthanvs](https://github.com/manthanvs)

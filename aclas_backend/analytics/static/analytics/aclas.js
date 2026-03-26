@@ -10,7 +10,7 @@
   const loader = document.getElementById('aclas-loader');
   if (loader) {
     window.addEventListener('load', () => {
-      setTimeout(() => loader.classList.add('hidden'), 300);
+      setTimeout(() => loader.classList.add('hidden'), 400);
     });
   }
 
