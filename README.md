@@ -1,8 +1,5 @@
 # ACLAS — Adaptive Coding Lifecycle Analytics System
 
-<p align="center">
-  <img src="aclas-vscode-master/images/logo.png" alt="ACLAS Logo" width="80"/>
-</p>
 
 <p align="center">
   <strong>Track. Analyze. Improve.</strong><br/>
