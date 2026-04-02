@@ -5,7 +5,7 @@
 /* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ---- CSS Custom Properties (Design Tokens) ---- */
+/* ---- CSS Custom Properties – Dark (default) ---- */
 :root {
   --bg:           #10141a;
   --surface:      #1c2026;
@@ -36,6 +36,38 @@
   --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Inter', sans-serif;
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ---- CSS Custom Properties – Light ---- */
+[data-theme="light"] {
+  --bg:           #f0f4f8;
+  --surface:      #ffffff;
+  --surface-high: #e8edf3;
+  --surface-top:  #d8e0ea;
+  --border:       rgba(180,196,218,0.6);
+  --primary:      #005fa3;
+  --primary-base: #007acc;
+  --secondary:    #1a7f3c;
+  --tertiary:     #6b3ec4;
+  --tertiary-base:#8b59e7;
+  --error:        #b91c1c;
+  --text:         #111827;
+  --text-muted:   #374151;
+  --text-dim:     #6b7280;
+  --green:        #16a34a;
+  --red:          #dc2626;
+  --yellow:       #b45309;
+  --purple:       #7c3aed;
+  --blue:         #1d4ed8;
+}
+
+/* Smooth theme transitions */
+body, .glass-card, .aclas-nav, .aclas-table td,
+.aclas-table th, .filter-input, .form-control,
+.badge, .btn-copy, .token-widget {
+  transition: background-color var(--transition),
+              color var(--transition),
+              border-color var(--transition);
 }
 
 /* ---- Reset ---- */
@@ -124,6 +156,9 @@ body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+}
+[data-theme="light"] .aclas-nav {
+  background: rgba(240, 244, 248, 0.88);
 }
 .aclas-nav-brand {
   display: flex;
@@ -229,12 +264,42 @@ body {
   border-radius: var(--radius-md);
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
+[data-theme="light"] .glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+}
 .glass-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 122, 204, 0.08);
   border-color: rgba(0,122,204,0.25);
 }
+[data-theme="light"] .glass-card:hover {
+  box-shadow: 0 8px 28px rgba(0, 122, 204, 0.15);
+}
 .card-clickable { cursor: pointer; }
+
+/* ---- Theme Toggle Button ---- */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--surface-high);
+  color: var(--text);
+  border-color: rgba(0,122,204,0.4);
+  transform: rotate(15deg) scale(1.1);
+}
 
 /* ---- Stat Cards ---- */
 .stats-grid {
@@ -245,6 +310,15 @@ body {
 }
 @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 600px)  { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* Stress row — always 3 columns, stack only on very small screens */
+.stress-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 480px) { .stress-row { grid-template-columns: 1fr; } }
 
 .stat-card {
   padding: 1.25rem;

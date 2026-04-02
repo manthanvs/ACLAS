@@ -1,10 +1,39 @@
 /* =========================================
    ACLAS – Effects JS
-   Loader | Cursor Glow | Parallax
+   Loader | Cursor Glow | Parallax | Theme
    ========================================= */
 
 (function () {
   'use strict';
+
+  /* ---- Theme Toggle ---- */
+  const THEME_KEY = 'aclas-theme';
+  const html      = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      html.setAttribute('data-theme', 'light');
+      if (toggleBtn) toggleBtn.textContent = '☀️';
+    } else {
+      html.removeAttribute('data-theme');
+      if (toggleBtn) toggleBtn.textContent = '🌙';
+    }
+  }
+
+  // Load saved preference, or detect OS preference
+  const saved = localStorage.getItem(THEME_KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next    = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+  }
 
   /* ---- Page Loader ---- */
   const loader = document.getElementById('aclas-loader');
@@ -91,3 +120,4 @@
   });
 
 })();
+

@@ -32,13 +32,15 @@
       <table class="aclas-table" id="statsTable">
         <thead>
           <tr>
-            <th>Timestamp</th>
+            <th>Recorded At</th>
             <th>Project</th>
+            <th>File</th>
             <th>Language</th>
             <th>Lines Added</th>
             <th>Lines Deleted</th>
             <th>Active Time</th>
             <th>Idle Time</th>
+            <th>Stress</th>
           </tr>
         </thead>
         <tbody>
@@ -46,6 +48,7 @@
           <tr>
             <td class="mono text-dim">{{ event.timestamp|date:"M d, Y H:i" }}</td>
             <td class="mono">{{ event.project_name }}</td>
+            <td class="mono text-dim" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ event.file }}">{{ event.file|default:"—" }}</td>
             <td>
               {% with lang=event.language|lower %}
               {% if lang == "python" %}
@@ -72,10 +75,21 @@
             <td class="text-dim mono">
               {% if event.idle_seconds %}{{ event.idle_seconds }}s{% else %}—{% endif %}
             </td>
+            <td>
+              {% with sc=event.stress_score %}
+              {% if sc <= 30 %}
+                <span class="badge" style="background:rgba(78,201,176,0.15);color:#4ec9b0;border:1px solid #4ec9b033;">{{ sc }}</span>
+              {% elif sc <= 60 %}
+                <span class="badge" style="background:rgba(219,179,1,0.15);color:#dbb301;border:1px solid #dbb30133;">{{ sc }}</span>
+              {% else %}
+                <span class="badge" style="background:rgba(241,76,76,0.15);color:#f14c4c;border:1px solid #f14c4c33;">{{ sc }}</span>
+              {% endif %}
+              {% endwith %}
+            </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="7" style="text-align:center; padding:3rem; color:var(--text-dim);">
+            <td colspan="9" style="text-align:center; padding:3rem; color:var(--text-dim);">
               No coding sessions recorded yet. Start typing in VS Code!
             </td>
           </tr>
@@ -87,3 +101,4 @@
 
 </div>
 {% endblock %}
+

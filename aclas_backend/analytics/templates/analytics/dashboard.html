@@ -47,6 +47,27 @@
     </div>
   </div>
 
+  <!-- Stress Score + Build Stats Row -->
+  <div class="stress-row">
+    <div class="glass-card stat-card fade-in-up delay-2" style="position:relative; overflow:hidden;">
+      <span class="stat-label">⚡ Avg Stress Score</span>
+      <span class="stat-value {{ stress_color }}">{{ avg_stress }}<small style="font-size:0.5em; opacity:0.7;">/100</small></span>
+      <span style="font-size:0.75rem; color:var(--text-dim); margin-top:4px;">{{ stress_level }} Stress Level</span>
+      <!-- Mini progress bar -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);">
+        <div style="height:100%;width:{{ avg_stress }}%;background:{% if stress_color == 'emerald' %}#4ec9b0{% elif stress_color == 'yellow' %}#dbb301{% else %}#f14c4c{% endif %};border-radius:0 2px 2px 0;transition:width 1s ease;"></div>
+      </div>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-3">
+      <span class="stat-label">🔨 Build Runs</span>
+      <span class="stat-value blue">{{ total_builds }}</span>
+    </div>
+    <div class="glass-card stat-card fade-in-up delay-4">
+      <span class="stat-label">💥 Build Failures</span>
+      <span class="stat-value red">{{ total_failures }}</span>
+    </div>
+  </div>
+
   <!-- API Token Widget -->
   <div class="glass-card token-widget fade-in-up delay-7">
     <div class="token-widget-left">
@@ -68,14 +89,22 @@
     </div>
   </div>
 
+  <!-- Stress Breakdown Chart -->
+  <div class="glass-card chart-card fade-in-up delay-5" style="margin-top:var(--gap, 1.5rem);">
+    <h3>⚡ Stress Signal Breakdown</h3>
+    <p style="font-size:0.8rem;color:var(--text-dim);margin:-0.5rem 0 1rem;">Cumulative stress signals across all sessions</p>
+    <canvas id="stressChart" height="120"></canvas>
+  </div>
+
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-  const projectsData  = JSON.parse('{{ projects_json|escapejs }}');
-  const languagesData = JSON.parse('{{ languages_json|escapejs }}');
-  Chart.defaults.color  = '#8a919d';
+  const projectsData   = JSON.parse('{{ projects_json|escapejs }}');
+  const languagesData  = JSON.parse('{{ languages_json|escapejs }}');
+  const stressData     = JSON.parse('{{ stress_breakdown_json|escapejs }}');
+  Chart.defaults.color      = '#8a919d';
   Chart.defaults.font.family = 'Inter';
 
   new Chart(document.getElementById('projectChart'), {
@@ -116,5 +145,34 @@
       plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 16 } } }
     }
   });
+
+  // Stress Breakdown horizontal bar chart
+  const stressLabels = Object.keys(stressData);
+  const stressValues = Object.values(stressData);
+  const stressColors = ['#f14c4c','#e07070','#f08060','#dbb301','#8b59e7','#007acc'];
+  new Chart(document.getElementById('stressChart'), {
+    type: 'bar',
+    data: {
+      labels: stressLabels,
+      datasets: [{
+        label: 'Total Count',
+        data: stressValues,
+        backgroundColor: stressColors.map(c => c + 'aa'),
+        borderColor: stressColors,
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(64,71,81,0.3)' }, ticks: { color: '#8a919d' } },
+        y: { grid: { display: false }, ticks: { color: '#c9d1d9', font: { size: 12 } } }
+      }
+    }
+  });
 </script>
 {% endblock %}
+
