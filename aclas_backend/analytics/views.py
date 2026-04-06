@@ -1,9 +1,14 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count, Avg
 from telemetry.models import TelemetryEvent
 from rest_framework.authtoken.models import Token
+
+def landing_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'analytics/landing.html')
 
 @login_required
 def dashboard_view(request):
@@ -104,3 +109,7 @@ def dashboard_view(request):
 def stats_view(request):
     events = TelemetryEvent.objects.filter(user=request.user).order_by('-timestamp')[:50]
     return render(request, 'analytics/stats.html', {'events': events})
+
+@login_required
+def about_view(request):
+    return render(request, 'analytics/about.html')

@@ -1,0 +1,642 @@
+{% extends 'analytics/base.html' %}
+{% load static %}
+
+{% block title %}About | ACLAS{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ─── About Page Specific Styles ─────────────────────────────── */
+  .about-hero {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    position: relative;
+  }
+  .about-hero .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,122,204,0.12);
+    border: 1px solid rgba(0,122,204,0.3);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #58a6ff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  .about-hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    background: linear-gradient(135deg, #e6edf3 30%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .about-hero p {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ─── Section Headers ─────────────────────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+  }
+  .section-header .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .icon-blue   { background: rgba(0,122,204,0.18); }
+  .icon-green  { background: rgba(35,134,54,0.18); }
+  .icon-purple { background: rgba(139,89,231,0.18); }
+  .icon-red    { background: rgba(241,76,76,0.18); }
+  .icon-yellow { background: rgba(219,179,1,0.18); }
+  .icon-teal   { background: rgba(78,201,176,0.18); }
+
+  .section-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .section-header p {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin: 2px 0 0;
+  }
+
+  /* ─── Pipeline Steps ──────────────────────────────────────────── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .pipeline-step {
+    display: flex;
+    gap: 1.25rem;
+    position: relative;
+    padding-bottom: 2rem;
+  }
+  .pipeline-step:last-child { padding-bottom: 0; }
+  .step-line-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 36px;
+  }
+  .step-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .dot-blue   { background: #007acc; }
+  .dot-green  { background: #238636; }
+  .dot-purple { background: #8b59e7; }
+  .dot-yellow { background: #dbb301; }
+  .dot-teal   { background: #4ec9b0; }
+
+  .step-connector {
+    flex: 1;
+    width: 2px;
+    background: linear-gradient(to bottom, rgba(88,166,255,0.25), transparent);
+    margin-top: 4px;
+    min-height: 24px;
+  }
+  .pipeline-step:last-child .step-connector { display: none; }
+
+  .step-body { flex: 1; padding-top: 5px; }
+  .step-body h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    color: var(--text);
+  }
+  .step-body p {
+    font-size: 0.83rem;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ─── Metrics Grid ────────────────────────────────────────────── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .metric-chip {
+    background: var(--surface-high);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .metric-chip:hover {
+    border-color: rgba(88,166,255,0.4);
+    transform: translateY(-2px);
+  }
+  .metric-chip .chip-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+  }
+  .metric-chip .chip-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .weight-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+  }
+  .wb-red    { background: rgba(241,76,76,0.18);   color: #f14c4c; }
+  .wb-orange { background: rgba(240,128,96,0.18);  color: #f08060; }
+  .wb-blue   { background: rgba(0,122,204,0.18);   color: #58a6ff; }
+  .wb-purple { background: rgba(139,89,231,0.18);  color: #a78bfa; }
+  .wb-yellow { background: rgba(219,179,1,0.18);   color: #dbb301; }
+  .wb-gray   { background: rgba(139,148,158,0.18); color: #8a919d; }
+
+  .metric-chip .chip-desc {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ─── Formula Box ─────────────────────────────────────────────── */
+  .formula-box {
+    background: var(--surface-high);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.85rem;
+    line-height: 2.1;
+    overflow-x: auto;
+  }
+  .formula-box .f-comment { color: #5c7288; font-style: italic; }
+  .formula-box .f-var     { color: #58a6ff; font-weight: 600; }
+  .formula-box .f-op      { color: #dbb301; }
+  .formula-box .f-lit     { color: #4ec9b0; }
+  .formula-box .f-fn      { color: #a78bfa; }
+  .formula-box .f-eq      { color: #e6edf3; }
+
+  /* ─── Threshold Table ─────────────────────────────────────────── */
+  .threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.65rem;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .threshold-row:hover { background: var(--surface-high); }
+  .threshold-row .th-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .th-green  { background: #4ec9b0; }
+  .th-yellow { background: #dbb301; }
+  .th-red    { background: #f14c4c; }
+  .threshold-row .th-range {
+    font-weight: 700;
+    color: var(--text);
+    min-width: 90px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .threshold-row .th-label { flex: 1; color: var(--text-dim); }
+  .threshold-row .th-meaning { font-size: 0.83rem; color: var(--text-dim); text-align:right; }
+
+  /* ─── FAQ Accordion ───────────────────────────────────────────── */
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+    transition: border-color 0.2s;
+  }
+  .faq-item:hover { border-color: rgba(88,166,255,0.3); }
+  .faq-q {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 1.25rem;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    gap: 0.5rem;
+  }
+  .faq-q svg {
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    stroke: #8a919d;
+  }
+  .faq-item.open .faq-q svg { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.25s;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    padding: 0 1.25rem;
+  }
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding: 0 1.25rem 1.25rem;
+  }
+
+  /* ─── About Grid Layout ───────────────────────────────────────── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem;
+  }
+  .about-grid .glass-card {
+    padding: 2.25rem;
+  }
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; }
+  }
+  .about-full { grid-column: 1 / -1; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Parallax Background -->
+<div class="parallax-bg">
+  <div class="parallax-orb p-orb-1"></div>
+  <div class="parallax-orb p-orb-2"></div>
+</div>
+
+<div class="aclas-page">
+
+  <!-- ── Hero ───────────────────────────────────────────────────── -->
+  <div class="about-hero fade-in-up">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About ACLAS
+    </div>
+    <h1>How ACLAS Works</h1>
+    <p>
+      ACLAS helps you understand your coding habits. It quietly watches how you work in your editor, 
+      figures out when things get frustrating, and shows you simple summaries so you can improve your 
+      workflow without the guesswork.
+    </p>
+  </div>
+
+  <!-- ── Main Grid ──────────────────────────────────────────────── -->
+  <div class="about-grid">
+
+    <!-- Pipeline Card -->
+    <div class="glass-card fade-in-up delay-1 about-full">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🔗</div>
+        <div>
+          <h2>How It Works</h2>
+          <p>From typing to tracking — in 5 simple steps</p>
+        </div>
+      </div>
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-blue">1</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Your Editor Keeps an Eye Out</h4>
+            <p>
+              Our free extension runs quietly in your code editor. Every few seconds, it notices things like code errors, how often you switch files or undo typing, and if your code fails to run. It also tracks how long you're actively typing versus taking a break.
+            </p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-green">2</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Sending the Quick Notes</h4>
+            <p>
+              The extension packages up these quick notes and securely sends them to the ACLAS server using your personal connection key. We call each set of notes an "Event".
+            </p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-purple">3</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Safe Storage</h4>
+            <p>
+              The server receives your data, double-checks it, and saves it securely in a database. Everything is linked only to your account, keeping your info totally private.
+            </p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-yellow">4</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Connecting the Dots & Checking Stress</h4>
+            <p>
+              When you open your Dashboard, the system looks at all your past events. It crunches the numbers and calculates a "Stress Score" to figure out which coding moments were the most frustrating.
+            </p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-teal">5</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Your Personal Dashboard</h4>
+            <p>
+              Finally, the data is turned into easy-to-read charts. You can see your favorite programming languages, your most active projects, and pinpoint exactly when and why coding got stressful.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracked Metrics -->
+    <div class="glass-card fade-in-up delay-2">
+      <div class="section-header">
+        <div class="section-icon icon-teal">📡</div>
+        <div>
+          <h2>What We Track</h2>
+          <p>The basic details of every coding session</p>
+        </div>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">🕐 Active Time</span>
+          </div>
+          <div class="chip-desc">Time spent actively typing and writing code.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">💤 Idle Time</span>
+          </div>
+          <div class="chip-desc">Time spent paused, reading, or stepping away from the keyboard.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">➕ Lines Added</span>
+          </div>
+          <div class="chip-desc">New lines of code you successfully wrote.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">➖ Lines Deleted</span>
+          </div>
+          <div class="chip-desc">Lines you removed (lots of deleting might mean you're re-thinking things!).</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">🗣️ Language</span>
+          </div>
+          <div class="chip-desc">The programming language you were using (like Python or JavaScript).</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">📁 Project</span>
+          </div>
+          <div class="chip-desc">The name of the folder or project you were working on.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stress Metrics -->
+    <div class="glass-card fade-in-up delay-3">
+      <div class="section-header">
+        <div class="section-icon icon-red">⚡</div>
+        <div>
+          <h2>What Causes "Stress"?</h2>
+          <p>The signs we use to figure out if you're feeling stuck</p>
+        </div>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">🔴 Errors</span>
+            <span class="weight-badge wb-blue">Important</span>
+          </div>
+          <div class="chip-desc">Code mistakes popping up while you type.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">🔁 Repeated Errors</span>
+            <span class="weight-badge wb-red">Very Important</span>
+          </div>
+          <div class="chip-desc">The same error staying there for a while — a big sign you might be stuck.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">💥 Build Failures</span>
+            <span class="weight-badge wb-orange">Very Important</span>
+          </div>
+          <div class="chip-desc">When you try to run or test your program and it completely crashes.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">🔄 File Switches</span>
+            <span class="weight-badge wb-gray">Minor</span>
+          </div>
+          <div class="chip-desc">Jumping between different files quickly, which might mean you're a bit lost.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">↩️ Undo Count</span>
+            <span class="weight-badge wb-yellow">Noticeable</span>
+          </div>
+          <div class="chip-desc">Hitting Ctrl+Z a lot, meaning you're changing your mind or fixing mistakes.</div>
+        </div>
+        <div class="metric-chip">
+          <div class="chip-top">
+            <span class="chip-name">🖥️ Terminal Errors</span>
+            <span class="weight-badge wb-blue">Important</span>
+          </div>
+          <div class="chip-desc">Commands failing when you type them into the terminal window.</div>
+        </div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:0.75rem;">
+        ℹ️ <strong>Successful Builds</strong> are tracked, but they don't cause stress! Testing your code often is a good habit. We only add stress points if the build <em>fails</em>.
+      </p>
+    </div>
+
+    <!-- Stress Formula -->
+    <div class="glass-card fade-in-up delay-3 about-full">
+      <div class="section-header">
+        <div class="section-icon icon-purple">🧮</div>
+        <div>
+          <h2>How We Calculate Stress</h2>
+          <p>Keeping the math simple and fair</p>
+        </div>
+      </div>
+
+      <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:1rem;line-height:1.7;">
+        Basically, we take all the "Stress" signs mentioned above (like errors and undos) and add them up. 
+        But some signs are more frustrating than others — for example, a program crashing is much more 
+        annoying than hitting Ctrl+Z once. So, we give the tough problems a higher "weight" to reflect reality.
+      </p>
+
+      <div class="formula-box">
+        <span class="f-comment">-- The plain English version of our math --</span><br>
+        <span class="f-var" style="font-size:1.1em; color: var(--text);">1. Point System:</span> Every error, crash, and undo gives you stress points.<br><br>
+        <span class="f-var" style="font-size:1.1em; color: var(--text);">2. Fairness Check:</span> We divide your total points by the amount of time you spent coding, so longer sessions don't automatically look worse than shorter ones.<br><br>
+        <span class="f-var" style="font-size:1.1em; color: var(--text);">3. Maximum Score:</span> We cap the final score at <span class="f-lit">100</span>, giving you a percentage gauge that is super easy to understand.<br>
+      </div>
+
+      <p style="font-size:0.8rem;color:var(--text-dim);margin-top:1rem;line-height:1.7;">
+        The end result is an easy 0 to 100 number that instantly tells you: <em>"Oh, things were getting pretty rough there!"</em> or <em>"That was a smooth coding session."</em>
+      </p>
+    </div>
+
+    <!-- Stress Thresholds -->
+    <div class="glass-card fade-in-up delay-4">
+      <div class="section-header">
+        <div class="section-icon icon-yellow">🚦</div>
+        <div>
+          <h2>Stress Levels Explained</h2>
+          <p>What the numbers actually mean</p>
+        </div>
+      </div>
+      <div class="threshold-row">
+        <div class="th-dot th-green"></div>
+        <span class="th-range">0 – 30</span>
+        <span class="th-label">🟢 Low Stress</span>
+        <span class="th-meaning">Smooth sailing! A few errors are normal.</span>
+      </div>
+      <div class="threshold-row">
+        <div class="th-dot th-yellow"></div>
+        <span class="th-range">31 – 60</span>
+        <span class="th-label">🟡 Medium Stress</span>
+        <span class="th-meaning">Some bumps in the road. You might be figuring out a tricky problem.</span>
+      </div>
+      <div class="threshold-row">
+        <div class="th-dot th-red"></div>
+        <span class="th-range">61 – 100</span>
+        <span class="th-label">🔴 High Stress</span>
+        <span class="th-meaning">Frustrating. Multiple things are failing or you might be stuck.</span>
+      </div>
+      <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0.85rem;line-height:1.6;">
+        Don't worry if you hit Medium or High stress occasionally! Coding is hard work. This tool is just here to help you spot when you might need to take a break or ask for help.
+      </p>
+    </div>
+
+    <!-- FAQ -->
+    <div class="glass-card fade-in-up delay-4">
+      <div class="section-header">
+        <div class="section-icon icon-green">❓</div>
+        <div>
+          <h2>Common Questions</h2>
+          <p>Easy answers to things you might be wondering</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq1">
+        <button class="faq-q" onclick="toggleFaq('faq1')">
+          Is my code ever uploaded to ACLAS?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a">
+          No, never. We only send numbers (like "3 errors" or "10 lines added"). Your actual code stays completely private on your own computer.
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq2">
+        <button class="faq-q" onclick="toggleFaq('faq2')">
+          How often does it track my work?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a">
+          It checks in about every 5 seconds while you are working. If you get up to grab coffee, it politely goes to sleep until you start typing again.
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq3">
+        <button class="faq-q" onclick="toggleFaq('faq3')">
+          Why aren't successful builds counted as stressful?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a">
+          Because testing your code often is a great habit! We want to encourage you to run your code. We only add stress points if those tests completely fail.
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq4">
+        <button class="faq-q" onclick="toggleFaq('faq4')">
+          Who can see my data?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a">
+          Only you. Your data is kept safe and locked to your personal account on the ACLAS server.
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq5">
+        <button class="faq-q" onclick="toggleFaq('faq5')">
+          How do I start using it?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a">
+          It's easy! Copy your secret API Token from the Dashboard, paste it into the ACLAS settings inside your VS Code editor, and it will start working all by itself.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end about-grid -->
+</div><!-- end aclas-page -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function toggleFaq(id) {
+    const item = document.getElementById(id);
+    item.classList.toggle('open');
+  }
+</script>
+{% endblock %}

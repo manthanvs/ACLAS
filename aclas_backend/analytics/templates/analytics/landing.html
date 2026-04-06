@@ -1,0 +1,302 @@
+{% extends 'analytics/base.html' %}
+
+{% block title %}ACLAS - Adaptive Coding Lifecycle Analytics System{% endblock %}
+
+{% block content %}
+<style>
+  /* Landing Specific Styles */
+  .landing-hero {
+    text-align: center;
+    padding: 5rem 1rem 4rem;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(0, 122, 204, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(0, 122, 204, 0.25);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+  }
+  .landing-hero h1 {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .landing-hero h1 span {
+    background: linear-gradient(135deg, var(--primary-base), var(--tertiary-base));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .landing-hero p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+  }
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .hero-actions .btn {
+    padding: 12px 28px;
+    font-size: 1rem;
+  }
+
+  /* Mock Dashboard Section */
+  .mock-dashboard-wrapper {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto 4rem;
+    perspective: 1000px;
+    padding: 0 1rem;
+  }
+  .mock-glass {
+    background: rgba(26, 30, 36, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 1rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    /* Subtle tilt for a dynamic presentation effect */
+    transform: rotateX(2deg) translateY(0);
+    transition: transform 0.4s ease;
+  }
+  [data-theme="light"] .mock-glass {
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+  .mock-glass:hover {
+    transform: rotateX(0deg) translateY(-5px);
+  }
+  
+  .mock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
+  }
+  .mock-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+  .pulse-blob {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: mockPulse 2s infinite;
+  }
+  @keyframes mockPulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(123, 219, 128, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(123, 219, 128, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(123, 219, 128, 0); }
+  }
+
+  /* Mock Charts Grid */
+  .mock-stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media(max-width: 800px) {
+    .mock-stat-cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  .m-card {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+  .m-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem; }
+  .m-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text); }
+  
+  .mock-charts {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+  }
+  @media(max-width: 800px) {
+    .mock-charts { grid-template-columns: 1fr; }
+  }
+  .m-chart-card {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+  }
+</style>
+
+<!-- Background Orbs -->
+<div class="parallax-bg">
+  <div class="parallax-orb p-orb-1" style="width: 800px; height: 800px; top: -300px; left: 10%;"></div>
+  <div class="parallax-orb p-orb-2" style="width: 600px; height: 600px; bottom: 0; right: -10%;"></div>
+</div>
+
+<div class="landing-hero fade-in-up">
+  <div class="hero-badge">Now In Early Access</div>
+  <h1>Code Tracking,<br><span>Reinvented.</span></h1>
+  <p>ACLAS quietly runs in your editor, analyzing your behavior, stress levels, and coding patterns to deliver actionable insights straight to your dashboard.</p>
+  <div class="hero-actions">
+    <a href="/accounts/signup/" class="btn btn-primary">Start Tracking Now</a>
+    <a href="/about/" class="btn btn-ghost">Learn How It Works</a>
+  </div>
+</div>
+
+<div class="mock-dashboard-wrapper fade-in-up delay-2">
+  <div class="mock-glass">
+    <div class="mock-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="pulse-blob"></span>
+        <span class="mock-title">Live Preview</span>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text-dim);font-family:var(--font-mono);">mock_data_sim</div>
+    </div>
+    
+    <div class="mock-stat-cards">
+      <div class="m-card">
+        <div class="m-label">Active Time</div>
+        <div class="m-value" style="color: var(--blue);">4h 12m</div>
+      </div>
+      <div class="m-card">
+        <div class="m-label">Files Switched</div>
+        <div class="m-value" style="color: var(--yellow);">34</div>
+      </div>
+      <div class="m-card">
+        <div class="m-label">Critical Errors</div>
+        <div class="m-value" style="color: var(--red);">7</div>
+      </div>
+      <div class="m-card">
+        <div class="m-label">Avg Stress Level</div>
+        <div class="m-value" style="color: var(--green);">24%</div>
+      </div>
+    </div>
+
+    <div class="mock-charts">
+      <div class="m-chart-card">
+        <div class="m-label">Activity Over Time (Simulated)</div>
+        <div style="position: relative; height: 220px;">
+          <canvas id="mockActivityChart"></canvas>
+        </div>
+      </div>
+      <div class="m-chart-card">
+        <div class="m-label">Language Split</div>
+        <div style="position: relative; height: 220px; display:flex; justify-content:center;">
+          <canvas id="mockLangChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Chart defaults for mock to match ACLAS styling
+  Chart.defaults.color = "#8a919d";
+  Chart.defaults.font.family = "'Inter', sans-serif";
+
+  const getGridColor = () => {
+    return document.body.getAttribute('data-theme') === 'light' 
+      ? 'rgba(0,0,0,0.06)' 
+      : 'rgba(255,255,255,0.06)';
+  };
+
+  // Mock Activity Chart
+  const ctxActivity = document.getElementById('mockActivityChart').getContext('2d');
+  
+  // Generating believable fake sparkline data
+  const labels = ["10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM"];
+  const dataKeystrokes = [1200, 3400, 1800, 500, 2900, 4100, 2200, 3100];
+  const dataStress = [10, 25, 40, 15, 30, 55, 35, 20];
+
+  const mockActivityChart = new Chart(ctxActivity, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Keystrokes',
+          data: dataKeystrokes,
+          borderColor: '#007acc',
+          backgroundColor: 'rgba(0, 122, 204, 0.1)',
+          fill: true,
+          tension: 0.4,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Stress Factor',
+          data: dataStress,
+          borderColor: '#ffb4ab',
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.4,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { 
+          display: false,
+          grid: { color: getGridColor() } 
+        },
+        y1: { display: false }
+      }
+    }
+  });
+
+  // Mock Language Chart
+  const ctxLang = document.getElementById('mockLangChart').getContext('2d');
+  const mockLangChart = new Chart(ctxLang, {
+    type: 'doughnut',
+    data: {
+      labels: ['Python', 'TypeScript', 'JavaScript'],
+      datasets: [{
+        data: [65, 25, 10],
+        backgroundColor: ['#007acc', '#8b59e7', '#f1e05a'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '75%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 15 } }
+      }
+    }
+  });
+
+  // Update chart grids on theme toggle if logic exists
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'data-theme') {
+        const gridColor = getGridColor();
+        mockActivityChart.options.scales.y.grid.color = gridColor;
+        mockActivityChart.update();
+      }
+    });
+  });
+  observer.observe(document.body, { attributes: true });
+});
+</script>
+{% endblock %}
