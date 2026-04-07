@@ -53,6 +53,24 @@
 
 ---
 
+## 🧠 Developer Stress Detection
+
+**ACLAS** calculates a real-time developer **Stress Score** from passive VS Code telemetry using this exact linear weighted-sum formula (as implemented in `aclas_backend/analytics/views.py`):
+
+```python
+raw = (
+    self.errors          * 3 +   # General IDE / runtime errors
+    self.repeated_errors * 5 +   # Persistent same-error loops
+    self.build_failures  * 4 +   # Compile / build crashes
+    self.file_switches   * 1 +   # Context / navigational churn
+    self.undo_count      * 2 +   # Ctrl+Z hesitation & corrections
+    self.terminal_errors * 3     # Shell / CLI execution failures
+)
+stress_score = min(100, raw)
+```
+
+---
+
 ## 🖼️ Screenshots
 
 > _Start the server locally and add your screenshots here_
