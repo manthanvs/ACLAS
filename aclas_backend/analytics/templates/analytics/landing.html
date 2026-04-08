@@ -2,301 +2,660 @@
 
 {% block title %}ACLAS - Adaptive Coding Lifecycle Analytics System{% endblock %}
 
-{% block content %}
+{% block extra_head %}
+<!-- Kursor CSS for Cursor Animation -->
+<link rel="stylesheet" href="https://unpkg.com/kursor/dist/kursor.css">
+
 <style>
-  /* Landing Specific Styles */
+  /* Base & Kinetic Editorial Adjustments */
+  body {
+    position: relative;
+    background: #0d1117; /* Deep Obsidian fallback */
+    overflow-x: hidden;
+  }
+  
+  /* Particle Background Container */
+  #tsparticles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  /* Landing Hero */
   .landing-hero {
     text-align: center;
-    padding: 5rem 1rem 4rem;
+    padding: 7rem 1rem 5rem;
     position: relative;
+    z-index: 10;
   }
   .hero-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    background: rgba(0, 122, 204, 0.1);
-    color: var(--primary);
-    border: 1px solid rgba(0, 122, 204, 0.25);
-    border-radius: 20px;
-    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 6px 16px;
+    background: rgba(0, 122, 204, 0.15);
+    color: var(--primary, #9fcaff);
+    border: 1px solid rgba(0, 122, 204, 0.4);
+    border-radius: 30px;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 1.5rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(8px);
   }
   .landing-hero h1 {
-    font-family: var(--font-display);
-    font-size: 3.5rem;
-    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 800;
     color: var(--text);
     line-height: 1.1;
-    margin-bottom: 1.25rem;
-    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
   }
   .landing-hero h1 span {
-    background: linear-gradient(135deg, var(--primary-base), var(--tertiary-base));
+    background: linear-gradient(135deg, #9fcaff, #007acc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .landing-hero p {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: var(--text-dim);
-    max-width: 600px;
-    margin: 0 auto 2.5rem;
-    line-height: 1.6;
+    max-width: 650px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+    font-family: 'Inter', sans-serif;
   }
   .hero-actions {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.2rem;
   }
-  .hero-actions .btn {
-    padding: 12px 28px;
-    font-size: 1rem;
+  .btn-primary {
+    background: linear-gradient(135deg, #007acc, #9fcaff);
+    color: #001d36;
+    border: none;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(159, 202, 255, 0.2);
+  }
+  .btn-ghost {
+    background: rgba(45, 49, 55, 0.4);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(138, 145, 157, 0.3);
+    color: #9fcaff;
+    padding: 14px 32px;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.3s;
+    text-decoration: none;
+  }
+  .btn-ghost:hover {
+    background: rgba(45, 49, 55, 0.8);
+    transform: translateY(-2px);
   }
 
-  /* Mock Dashboard Section */
-  .mock-dashboard-wrapper {
-    position: relative;
+  /* Integrated About Sections */
+  .info-container {
     max-width: 1100px;
-    margin: 0 auto 4rem;
-    perspective: 1000px;
-    padding: 0 1rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 6rem;
+    position: relative;
+    z-index: 10;
   }
-  .mock-glass {
-    background: rgba(26, 30, 36, 0.5);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 1rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    /* Subtle tilt for a dynamic presentation effect */
-    transform: rotateX(2deg) translateY(0);
-    transition: transform 0.4s ease;
+
+  /* Grid Layout for About stuff */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
-  [data-theme="light"] .mock-glass {
-    background: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+
+  .glass-card {
+    background: rgba(28, 32, 38, 0.6) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(138, 145, 157, 0.15);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
   }
-  .mock-glass:hover {
-    transform: rotateX(0deg) translateY(-5px);
+  .glass-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(159, 202, 255, 0.3);
   }
-  
-  .mock-header {
+
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .section-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+  }
+  .icon-blue   { background: rgba(0,122,204,0.18); color: #58a6ff; }
+  .icon-green  { background: rgba(35,134,54,0.18); color: #238636; }
+  .icon-purple { background: rgba(139,89,231,0.18); color: #8b59e7; }
+  .icon-red    { background: rgba(241,76,76,0.18); color: #f14c4c; }
+  .icon-yellow { background: rgba(219,179,1,0.18); color: #dbb301; }
+  .icon-teal   { background: rgba(78,201,176,0.18); color: #4ec9b0; }
+
+  .section-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .section-header p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 4px 0 0;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Pipeline Elements */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+  }
+  .pipeline-step {
+    display: flex;
+    gap: 1.5rem;
+    position: relative;
+    padding-bottom: 2.5rem;
+  }
+  .pipeline-step:last-child { padding-bottom: 0; }
+  .step-line-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+  }
+  .step-dot {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Space Grotesk', monospace;
+    z-index: 2;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  }
+  .dot-blue { background: #007acc; } .dot-green { background: #238636; } .dot-purple { background: #8b59e7; } .dot-yellow { background: #dbb301; } .dot-teal { background: #4ec9b0; }
+  .step-connector {
+    flex: 1;
+    width: 2px;
+    background: linear-gradient(to bottom, rgba(159,202,255,0.3), transparent);
+    margin-top: 8px;
+    min-height: 30px;
+  }
+  .pipeline-step:last-child .step-connector { display: none; }
+  .step-body { padding-top: 5px; }
+  .step-body h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: var(--text);
+  }
+  .step-body p {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+  .metric-chip {
+    background: rgba(38, 42, 49, 0.4);
+    border: 1px solid rgba(138, 145, 157, 0.15);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .metric-chip:hover {
+    border-color: rgba(159, 202, 255, 0.4);
+    background: rgba(38, 42, 49, 0.7);
+    transform: translateY(-3px);
+  }
+  .chip-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .chip-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #dfe2eb;
+    font-family: 'Inter', sans-serif;
+  }
+  .chip-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .weight-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .wb-blue { background: rgba(0,122,204,0.2); color: #9fcaff; }
+  .wb-red { background: rgba(241,76,76,0.2); color: #ffb4ab; }
+  .wb-orange { background: rgba(240,128,96,0.2); color: #ffbc99; }
+  .wb-gray { background: rgba(138,145,157,0.2); color: #c0c7d3; }
+  .wb-yellow { background: rgba(219,179,1,0.2); color: #f1e05a; }
+
+  /* Formula / Thresholds */
+  .formula-box {
+    background: rgba(10, 14, 20, 0.8);
+    border: 1px solid rgba(138, 145, 157, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.95rem;
+    line-height: 2;
+  }
+  .f-var { color: #9fcaff; font-weight: 600; }
+  .f-lit { color: #7bdb80; }
+  .threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: rgba(38, 42, 49, 0.3);
+    border: 1px solid rgba(138, 145, 157, 0.1);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+  }
+  .th-dot { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
+  .th-green { background: #7bdb80; color: #7bdb80;}
+  .th-yellow { background: #f1e05a; color: #f1e05a;}
+  .th-red { background: #ffb4ab; color: #ffb4ab;}
+  .th-range { font-family: 'Space Grotesk', sans-serif; font-weight: 700; width: 100px; font-size: 1.1rem;}
+  .th-label { color: #dfe2eb; font-weight: 600; flex: 1;}
+
+  /* FAQ Accordion */
+  .faq-item {
+    background: rgba(38, 42, 49, 0.3);
+    border: 1px solid rgba(138, 145, 157, 0.15);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .faq-item:hover { border-color: rgba(159, 202, 255, 0.4); }
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    background: none; border: none;
+    padding: 1.25rem 1.5rem;
+    color: #dfe2eb;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 1rem;
   }
-  .mock-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
-  .pulse-blob {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 10px var(--green);
-    animation: mockPulse 2s infinite;
+  .faq-q svg { stroke: #8a919d; transition: transform 0.3s; }
+  .faq-item.open .faq-q svg { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0 1.5rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-size: 0.95rem;
   }
-  @keyframes mockPulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(123, 219, 128, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(123, 219, 128, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(123, 219, 128, 0); }
+  .faq-item.open .faq-a {
+    max-height: 400px;
+    padding: 0 1.5rem 1.5rem;
   }
 
-  /* Mock Charts Grid */
-  .mock-stat-cards {
+  /* Two Column Alignments */
+  .two-cols {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
   }
-  @media(max-width: 800px) {
-    .mock-stat-cards { grid-template-columns: repeat(2, 1fr); }
+  @media(max-width: 900px) {
+    .two-cols { grid-template-columns: 1fr; }
   }
-  .m-card {
-    background: var(--surface);
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    border: 1px solid var(--border);
-  }
-  .m-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; margin-bottom: 0.5rem; }
-  .m-value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text); }
   
-  .mock-charts {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1rem;
+  /* Utilities */
+  .fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
   }
-  @media(max-width: 800px) {
-    .mock-charts { grid-template-columns: 1fr; }
-  }
-  .m-chart-card {
-    background: var(--surface);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    border: 1px solid var(--border);
+  .delay-1 { animation-delay: 0.15s; }
+  .delay-2 { animation-delay: 0.3s; }
+  .delay-3 { animation-delay: 0.45s; }
+  
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
+{% endblock %}
 
-<!-- Background Orbs -->
-<div class="parallax-bg">
-  <div class="parallax-orb p-orb-1" style="width: 800px; height: 800px; top: -300px; left: 10%;"></div>
-  <div class="parallax-orb p-orb-2" style="width: 600px; height: 600px; bottom: 0; right: -10%;"></div>
-</div>
+{% block content %}
+<!-- Particle Networks Backend -->
+<div id="tsparticles"></div>
 
+<!-- Hero Section -->
 <div class="landing-hero fade-in-up">
-  <div class="hero-badge">Now In Early Access</div>
-  <h1>Code Tracking,<br><span>Reinvented.</span></h1>
-  <p>ACLAS quietly runs in your editor, analyzing your behavior, stress levels, and coding patterns to deliver actionable insights straight to your dashboard.</p>
+  <div class="hero-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Adaptive Coding Lifecycle Analytics
+  </div>
+  <h1>Cognitive Telemetry,<br><span>Reinvented.</span></h1>
+  <p>ACLAS quietly runs in your editor, analyzing your behavior, stress levels, and coding patterns to deliver actionable insights straight to your dashboard—helping you improve workflow without the guesswork.</p>
   <div class="hero-actions">
-    <a href="/accounts/signup/" class="btn btn-primary">Start Tracking Now</a>
-    <a href="/about/" class="btn btn-ghost">Learn How It Works</a>
+    <a href="{% url 'accounts_signup' %}" class="btn-primary">Start Tracking Now</a>
+    <a href="#how-it-works" class="btn-ghost" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn How It Works</a>
   </div>
 </div>
 
-<div class="mock-dashboard-wrapper fade-in-up delay-2">
-  <div class="mock-glass">
-    <div class="mock-header">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span class="pulse-blob"></span>
-        <span class="mock-title">Live Preview</span>
+<!-- Main Information Container (Formerly the About Page) -->
+<div class="info-container">
+  
+  <div class="about-grid">
+    <!-- Pipeline Map -->
+    <div class="glass-card fade-in-up delay-1" id="how-it-works">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🔗</div>
+        <div>
+          <h2>How It Works</h2>
+          <p>From typing to tracking — in 5 seamless steps</p>
+        </div>
       </div>
-      <div style="font-size:0.8rem;color:var(--text-dim);font-family:var(--font-mono);">mock_data_sim</div>
-    </div>
-    
-    <div class="mock-stat-cards">
-      <div class="m-card">
-        <div class="m-label">Active Time</div>
-        <div class="m-value" style="color: var(--blue);">4h 12m</div>
-      </div>
-      <div class="m-card">
-        <div class="m-label">Files Switched</div>
-        <div class="m-value" style="color: var(--yellow);">34</div>
-      </div>
-      <div class="m-card">
-        <div class="m-label">Critical Errors</div>
-        <div class="m-value" style="color: var(--red);">7</div>
-      </div>
-      <div class="m-card">
-        <div class="m-label">Avg Stress Level</div>
-        <div class="m-value" style="color: var(--green);">24%</div>
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-blue">1</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Your Editor Keeps an Eye Out</h4>
+            <p>Our extension runs quietly in your IDE. It notices things like file switches, repeated compiler errors, undo keystrokes, and whether you are actively typing or idling.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-green">2</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Sending Telemetry Packets</h4>
+            <p>The extension securely batches these tiny state updates and sends them over HTTPS utilizing your unique personal API token.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-purple">3</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Safe Storage</h4>
+            <p>The centralized backend receives your data, sanitizes it, and saves it onto a secure private database linked solely to you.</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-yellow">4</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Evaluating Stress Vectors</h4>
+            <p>The system constantly assesses recent events. A complex formula weighs code failures, repeated errors, and undo habits to calculate a live Cognitive "Stress Score".</p>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-line-col">
+            <div class="step-dot dot-teal">5</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-body">
+            <h4>Your Personal Dashboard</h4>
+            <p>Your raw data is presented cleanly on your Dashboard—exposing your peak productive hours, identifying problematic projects, and showing exact stress spikes.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="mock-charts">
-      <div class="m-chart-card">
-        <div class="m-label">Activity Over Time (Simulated)</div>
-        <div style="position: relative; height: 220px;">
-          <canvas id="mockActivityChart"></canvas>
+    <div class="two-cols">
+      <!-- General Tracked Metrics -->
+      <div class="glass-card fade-in-up delay-2">
+        <div class="section-header">
+          <div class="section-icon icon-teal">📡</div>
+          <div>
+            <h2>What We Track</h2>
+            <p>Essential details of your coding session</p>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">🕐 Active/Idle Time</span></div>
+            <div class="chip-desc">Calculates your flow state versus keyboard breaks.</div>
+          </div>
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">➕➖ Line Diff</span></div>
+            <div class="chip-desc">Ratio of lines actively added versus removed (rewrites).</div>
+          </div>
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">🗣️ Context</span></div>
+            <div class="chip-desc">Language parser tracks what extensions and projects you use.</div>
+          </div>
         </div>
       </div>
-      <div class="m-chart-card">
-        <div class="m-label">Language Split</div>
-        <div style="position: relative; height: 220px; display:flex; justify-content:center;">
-          <canvas id="mockLangChart"></canvas>
+
+      <!-- Stress Weight Metrics -->
+      <div class="glass-card fade-in-up delay-2">
+        <div class="section-header">
+          <div class="section-icon icon-red">⚡</div>
+          <div>
+            <h2>What Triggers Stress?</h2>
+            <p>Our algorithms weight frustrations differently.</p>
+          </div>
         </div>
+        <div class="metrics-grid">
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">💥 Build Failures</span><span class="weight-badge wb-orange">Critical</span></div>
+            <div class="chip-desc">Total project compile or run crashes (heavy weight).</div>
+          </div>
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">🔁 Repeated Errors</span><span class="weight-badge wb-red">High</span></div>
+            <div class="chip-desc">Lingering static syntax errors indicating struggling logic.</div>
+          </div>
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">↩️ Undo Spam</span><span class="weight-badge wb-yellow">Noticeable</span></div>
+            <div class="chip-desc">High frequencies of `Ctrl+Z` marking rapid mind-changing.</div>
+          </div>
+          <div class="metric-chip">
+            <div class="chip-top"><span class="chip-name">🔄 File Thrashing</span><span class="weight-badge wb-gray">Minor</span></div>
+            <div class="chip-desc">Jumping through dozens of files quickly without edits.</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- End two-cols -->
+
+    <!-- Deep Dive Formula -->
+    <div class="glass-card fade-in-up delay-3">
+      <div class="section-header">
+        <div class="section-icon icon-purple">🧮</div>
+        <div>
+          <h2>Evaluation Algorithms</h2>
+          <p>We normalize chaos across time.</p>
+        </div>
+      </div>
+      <p style="color:var(--text-dim); margin-bottom: 1.5rem; line-height:1.7;">
+        ACLAS utilizes a time-decaying point system. Every distinct negative event type contributes to an accumulator. To ensure fairness, total points are divided by your active coding duration—so naturally longer sessions aren't unfairly penalized. The gauge is finally capped at 100%.
+      </p>
+      <div class="formula-box">
+        <span class="f-var">1. Point System:</span> Errors + Repeated Errors(x2) + Build Fails(x3)...<br>
+        <span class="f-var">2. Rate Normalization:</span> Base Points / Max(1, ActiveHours) * TuningConstant.<br>
+        <span class="f-var">3. Maximum Clamping:</span> min(CalculatedScore, <span class="f-lit">100</span>).
       </div>
     </div>
+
+    <!-- Thresholds and FAQ -->
+    <div class="two-cols">
+      <div class="glass-card fade-in-up delay-3">
+        <div class="section-header">
+          <div class="section-icon icon-yellow">🚦</div>
+          <div>
+            <h2>Stress Thresholds</h2>
+            <p>Decoding the 0-100 scale</p>
+          </div>
+        </div>
+        <div class="threshold-row">
+          <div class="th-dot th-green"></div>
+          <span class="th-range">0 – 30</span>
+          <span class="th-label">Low Friction</span>
+        </div>
+        <div class="threshold-row">
+          <div class="th-dot th-yellow"></div>
+          <span class="th-range">31 – 60</span>
+          <span class="th-label">Medium Friction</span>
+        </div>
+        <div class="threshold-row">
+          <div class="th-dot th-red"></div>
+          <span class="th-range">61 – 100</span>
+          <span class="th-label">High Friction</span>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-dim); margin-top:1.5rem; line-height:1.6;">
+          Reaching higher thresholds occasionally is an integral part of software development. ACLAS is merely highlighting where those pockets of intense energy expenditure lie.
+        </p>
+      </div>
+
+      <div class="glass-card fade-in-up delay-3">
+        <div class="section-header">
+          <div class="section-icon icon-green">❓</div>
+          <div>
+            <h2>Common Inquiries</h2>
+            <p>Quick facts on privacy and mechanics</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" id="faq1">
+          <button class="faq-q" onclick="toggleFaq('faq1')">
+            Is my actual code uploaded?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Absolutely not. We solely transmit aggregate integers (e.g. 5 errors, 50 file switches). Your code remains local.</div>
+        </div>
+        <div class="faq-item" id="faq2">
+          <button class="faq-q" onclick="toggleFaq('faq2')">
+            Do successful builds increase stress?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">No. Regular verification of functionality is encouraged. Only explicit process failures contribute to the score.</div>
+        </div>
+        <div class="faq-item" id="faq3">
+          <button class="faq-q" onclick="toggleFaq('faq3')">
+            How often is telemetry dispatched?
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a">Batches are routinely dispatched every few seconds while you write code. When idle, the system rests to save your CPU.</div>
+        </div>
+      </div>
+    </div><!-- end two-cols -->
+
   </div>
 </div>
-
 {% endblock %}
 
 {% block extra_scripts %}
+<!-- Kursor Library -->
+<script src="https://unpkg.com/kursor"></script>
+<!-- tsParticles Library -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2/tsparticles.engine.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles-basic@2/tsparticles.basic.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  // Chart defaults for mock to match ACLAS styling
-  Chart.defaults.color = "#8a919d";
-  Chart.defaults.font.family = "'Inter', sans-serif";
+  // Kursor Initiation
+  new kursor({
+    type: 1,
+    color: '#007acc',
+    removeDefaultCursor: false // Leave original cursor but render the trailing blob
+  });
 
-  const getGridColor = () => {
-    return document.body.getAttribute('data-theme') === 'light' 
-      ? 'rgba(0,0,0,0.06)' 
-      : 'rgba(255,255,255,0.06)';
-  };
-
-  // Mock Activity Chart
-  const ctxActivity = document.getElementById('mockActivityChart').getContext('2d');
-  
-  // Generating believable fake sparkline data
-  const labels = ["10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM"];
-  const dataKeystrokes = [1200, 3400, 1800, 500, 2900, 4100, 2200, 3100];
-  const dataStress = [10, 25, 40, 15, 30, 55, 35, 20];
-
-  const mockActivityChart = new Chart(ctxActivity, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Keystrokes',
-          data: dataKeystrokes,
-          borderColor: '#007acc',
-          backgroundColor: 'rgba(0, 122, 204, 0.1)',
-          fill: true,
-          tension: 0.4,
-          yAxisID: 'y'
-        },
-        {
-          label: 'Stress Factor',
-          data: dataStress,
-          borderColor: '#ffb4ab',
-          backgroundColor: 'transparent',
-          borderDash: [5, 5],
-          tension: 0.4,
-          yAxisID: 'y1'
-        }
-      ]
+  // tsParticles Initiation
+  tsParticles.load("tsparticles", {
+    background: {
+      color: { value: "transparent" }
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false } },
-        y: { 
-          display: false,
-          grid: { color: getGridColor() } 
-        },
-        y1: { display: false }
+    fpsLimit: 60,
+    interactivity: {
+      events: {
+        onHover: { enable: true, mode: "repulse" },
+        resize: true
+      },
+      modes: {
+        repulse: { distance: 100, duration: 0.4 }
       }
-    }
-  });
-
-  // Mock Language Chart
-  const ctxLang = document.getElementById('mockLangChart').getContext('2d');
-  const mockLangChart = new Chart(ctxLang, {
-    type: 'doughnut',
-    data: {
-      labels: ['Python', 'TypeScript', 'JavaScript'],
-      datasets: [{
-        data: [65, 25, 10],
-        backgroundColor: ['#007acc', '#8b59e7', '#f1e05a'],
-        borderWidth: 0,
-        hoverOffset: 4
-      }]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '75%',
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 15 } }
-      }
-    }
+    particles: {
+      color: { value: "#9fcaff" },
+      links: {
+        color: "#007acc",
+        distance: 150,
+        enable: true,
+        opacity: 0.3,
+        width: 1
+      },
+      collisions: { enable: false },
+      move: {
+        direction: "none",
+        enable: true,
+        outModes: { default: "bounce" },
+        random: false,
+        speed: 1,
+        straight: false
+      },
+      number: { density: { enable: true, area: 800 }, value: 50 },
+      opacity: { value: 0.5 },
+      shape: { type: "circle" },
+      size: { value: { min: 1, max: 2 } }
+    },
+    detectRetina: true
   });
 
-  // Update chart grids on theme toggle if logic exists
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.attributeName === 'data-theme') {
-        const gridColor = getGridColor();
-        mockActivityChart.options.scales.y.grid.color = gridColor;
-        mockActivityChart.update();
-      }
-    });
-  });
-  observer.observe(document.body, { attributes: true });
-});
+  // FAQ Accordion Logic
+  function toggleFaq(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
 </script>
 {% endblock %}
