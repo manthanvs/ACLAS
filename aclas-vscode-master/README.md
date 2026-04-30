@@ -1,65 +1,137 @@
-# CodeTime
+# ACLAS — Advanced Coding Lifecycle Analytics System
 
-[![CodeTime badge](https://img.shields.io/endpoint?style=social&url=https%3A%2F%2Fapi.codetime.dev%2Fshield%3Fid%3D2%26project%3Dcodetime-vscode%26in%3D0)](https://codetime.dev)
-![rating](https://img.shields.io/visual-studio-marketplace/stars/Jannchie.codetime)
-![installs](https://img.shields.io/visual-studio-marketplace/i/Jannchie.codetime)
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/manthanvs.aclas?label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=manthanvs.aclas)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/manthanvs.aclas)](https://marketplace.visualstudio.com/items?itemName=manthanvs.aclas)
 
-CodeTime vscode plugin. Statistical analysis of programming time.
+> **Monitor your coding health. Detect developer stress. Understand your workflow.**
 
-Web Site: [Code Time](https://codetime.dev)
+ACLAS is a VS Code extension that silently tracks your coding activity and sends rich telemetry heartbeats to your personal ACLAS Django dashboard — giving you deep insights into your productivity, stress levels, and coding patterns.
 
-## Previews
+---
 
-![Dash board](images/preview.png)
+## ✨ Features
 
-## Usage
+- 🫀 **Heartbeat Telemetry** — Sends coding activity data every 30 seconds (lines added, deleted, active/idle time)
+- 🧠 **Stress Score Detection** — Detects developer stress signals in real time:
+  - Error count & repeated errors
+  - Build runs & consecutive build failures
+  - File switch frequency
+  - Undo actions
+  - Terminal error exit codes
+- 📊 **Per-Project Analytics** — Tracks metrics per project and programming language
+- 💤 **Idle Detection** — Automatically pauses tracking after 15 minutes of inactivity
+- 🔒 **Secure Token Storage** — API token stored in VS Code's secure secret storage (never in plain text)
+- ⚠️ **Smart Warnings** — Notifies you when you've been idle too long or have repeated build failures
 
-1. Login from web site: [CodeTime](https://codetime.dev).
-2. Get token from web site: [CodeTime / settings](https://codetime.dev/dashboard/settings).
-3. In VSCode, Press <kbd>F1</kbd>, enter `token` to find the command: `CodeTime: Enter Token`, Press <kbd>Enter</kbd> and then input your token.
-4. Write some code, visit the dashboard and check if data is available.
+---
 
-> If using an online IDE like [GitHub Codespaces](https://docs.github.com/en/codespaces), add your token to global ENV variable `CODETIME_TOKEN`.
+## 🚀 Getting Started
 
-## Settings
+### 1. Set Up Your ACLAS Backend
 
-### Status Bar Info
+Make sure your ACLAS Django backend is running. You can run it locally:
 
-You are able to select what time to show in your status bar by:
+```bash
+cd aclas_backend
+python manage.py runserver
+```
 
-- Press <kbd>Ctrl</kbd> (or <kbd>command</kbd> in Mac OS) + <kbd>,</kbd>, then search `codetime` to find the options.
-- Press <kbd>F1</kbd>, enter `codetime` to find the options.
+### 2. Get Your API Token
 
-Supported options are:
+1. Open your ACLAS Dashboard in the browser (by default at `http://localhost:8000`)
+2. Log in to your account
+3. Navigate to **Settings** → copy your API Token
 
-- total: Show total code time
-- average: Show average code time.
-- today: Show today code time.
+### 3. Connect the Extension
 
-### Language / displayLanguage
+1. In VS Code, press `F1` (or `Ctrl+Shift+P`)
+2. Type and run: **`ACLAS: Enter API Token`**
+3. Paste your token and press Enter
 
-#### Purpose
+### 4. Start Coding!
 
-The `displayLanguage` option is used to switch the display language of the plugin interface. You can choose a specific language as needed, or use "auto" mode to automatically follow VSCode's interface language.
+The extension activates automatically when VS Code starts. Open any project and start coding — ACLAS will silently track your session and send heartbeats to your dashboard.
 
-#### Supported Languages
+---
 
-- `auto`: Auto mode, follows VSCode's current interface language
-- `en`: English
-- `zh-cn`: Simplified Chinese
-- `zh-tw`: Traditional Chinese
-- `de`: Deutsch (German)
-- `es`: Español (Spanish)
-- `fr`: Français (French)
-- `hi`: हिन्दी (Hindi)
-- `it`: Italiano (Italian)
-- `ja`: 日本語 (Japanese)
-- `ko`: 한국어 (Korean)
-- `pt-br`: Português (Brasil) (Portuguese-Brazil)
-- `ru`: Русский (Russian)
-- `ur`: اردو (Urdu)
+## ⚙️ Configuration
 
-#### How to Switch
+| Setting | Default | Description |
+|---|---|---|
+| `aclas.serverEntrypoint` | `http://localhost:8000/api/heartbeats/` | URL to your ACLAS backend heartbeat API |
 
-1. Press <kbd>Ctrl</kbd> (or <kbd>command</kbd> on Mac) + <kbd>,</kbd> to open settings, search for `codetime displayLanguage`.
-2. Or press <kbd>F1</kbd>, enter `codetime`, and find the `displayLanguage` option in settings to switch.
+To change the backend URL:
+- Go to **Settings** (`Ctrl+,`) and search for `aclas`
+- Or edit your `settings.json` directly
+
+---
+
+## 📡 Telemetry Data Sent
+
+Each heartbeat payload contains:
+
+```json
+{
+  "timestamp": "2026-04-21T10:00:00Z",
+  "project_name": "my-project",
+  "language": "python",
+  "file": "src/main.py",
+  "lines_added": 12,
+  "lines_deleted": 3,
+  "active_seconds": 28,
+  "idle_seconds": 2,
+  "errors": 2,
+  "repeated_errors": 1,
+  "build_runs": 1,
+  "build_failures": 0,
+  "file_switches": 4,
+  "undo_count": 2,
+  "terminal_errors": 0
+}
+```
+
+---
+
+## 🧮 Stress Metrics Explained
+
+| Metric | What It Measures |
+|---|---|
+| `errors` | Number of active error diagnostics in the editor |
+| `repeated_errors` | Errors that appeared in the previous poll (developer is stuck) |
+| `build_runs` | Times a VS Code task was started (compile, test, etc.) |
+| `build_failures` | Tasks that ended with errors still present |
+| `file_switches` | Number of times the active editor tab changed |
+| `undo_count` | Heuristic count of undo operations |
+| `terminal_errors` | Terminal commands that exited with a non-zero code |
+
+These metrics are combined on the dashboard into a **Stress Score** to help you identify coding sessions where you may need a break.
+
+---
+
+## 🔧 Commands
+
+| Command | Description |
+|---|---|
+| `ACLAS: Enter API Token` | Set or update your backend API token |
+| `ACLAS: Stop Tracking` | Manually pause telemetry for the current session |
+
+---
+
+## 🛡️ Privacy
+
+- All data is sent **only to your own backend** — no third-party servers
+- Your API token is stored in VS Code's **SecretStorage** (OS keychain)
+- You can stop tracking at any time via the command palette
+
+---
+
+## 📝 License
+
+MIT © Manthan
+
+---
+
+## 🔗 Links
+
+- [Report an Issue](https://github.com/manthanvs/aclas/issues)
+- [View on GitHub](https://github.com/manthanvs/aclas)

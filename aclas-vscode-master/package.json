@@ -1,13 +1,28 @@
 {
-  "publisher": "aclas-org",
+  "publisher": "manthanvs",
   "name": "aclas",
-  "displayName": "ACLAS Telemetry",
+  "displayName": "ACLAS - Coding Lifecycle Analytics",
   "version": "1.0.0",
-  "description": "Adaptive Coding Lifecycle Analytics System Tracker",
+  "description": "Advanced Coding Lifecycle Analytics System — tracks coding telemetry, stress metrics, and developer health insights in real time.",
   "main": "./dist/extension.js",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.99.0"
   },
+  "categories": [
+    "Other",
+    "Visualization",
+    "Education"
+  ],
+  "keywords": [
+    "telemetry",
+    "coding analytics",
+    "developer health",
+    "stress detection",
+    "productivity",
+    "time tracking",
+    "heartbeat"
+  ],
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -28,11 +43,20 @@
         "aclas.serverEntrypoint": {
           "type": "string",
           "default": "http://localhost:8000/api/heartbeats/",
-          "description": "URL to your local Django Backend"
+          "description": "URL to your ACLAS Django Backend API endpoint"
         }
       }
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manthanvs/aclas"
+  },
+  "homepage": "https://github.com/manthanvs/aclas#readme",
+  "bugs": {
+    "url": "https://github.com/manthanvs/aclas/issues"
+  },
+  "license": "MIT",
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",

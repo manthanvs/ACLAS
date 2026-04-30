@@ -4,9 +4,15 @@ out/**
 src/**
 .gitignore
 .yarnrc
+.npmrc
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
+eslint.config.mjs
 **/*.map
 **/*.ts
 node_modules
+build/**
+pnpm-lock.yaml
+package-lock.json
+*.vsix
