@@ -67,22 +67,21 @@
             <td class="text-green">+{{ event.lines_added }}</td>
             <td class="text-red">-{{ event.lines_deleted }}</td>
             <td class="text-dim mono">
-              {% if event.active_seconds %}
-                {% widthratio event.active_seconds 1 1 as secs %}
-                {{ event.active_seconds|default:"—" }}s
-              {% else %}—{% endif %}
+              {% if event.active_seconds %}{{ event.active_seconds }}s{% else %}—{% endif %}
             </td>
             <td class="text-dim mono">
               {% if event.idle_seconds %}{{ event.idle_seconds }}s{% else %}—{% endif %}
             </td>
             <td>
               {% with sc=event.stress_score %}
-              {% if sc <= 30 %}
-                <span class="badge" style="background:rgba(78,201,176,0.15);color:#4ec9b0;border:1px solid #4ec9b033;">{{ sc }}</span>
+              {% if sc == 0 %}
+                <span class="badge" style="background:rgba(138,145,157,0.12);color:#8a919d;border:1px solid #8a919d33;" title="No stress signals">—</span>
+              {% elif sc <= 30 %}
+                <span class="badge" style="background:rgba(78,201,176,0.15);color:#4ec9b0;border:1px solid #4ec9b033;" title="Low">{{ sc }}</span>
               {% elif sc <= 60 %}
-                <span class="badge" style="background:rgba(219,179,1,0.15);color:#dbb301;border:1px solid #dbb30133;">{{ sc }}</span>
+                <span class="badge" style="background:rgba(219,179,1,0.15);color:#dbb301;border:1px solid #dbb30133;" title="Medium">{{ sc }}</span>
               {% else %}
-                <span class="badge" style="background:rgba(241,76,76,0.15);color:#f14c4c;border:1px solid #f14c4c33;">{{ sc }}</span>
+                <span class="badge" style="background:rgba(241,76,76,0.15);color:#f14c4c;border:1px solid #f14c4c33;" title="High">{{ sc }}</span>
               {% endif %}
               {% endwith %}
             </td>

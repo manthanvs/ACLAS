@@ -123,10 +123,22 @@ export class AclasTracker {
         if (e.document.uri.scheme !== 'file') return;
         let added = 0;
         let deleted = 0;
+        let hasAnyDeletion = false;
         for (const change of e.contentChanges) {
-            const lines = (change.text.match(/\n/g) || []).length;
-            added += lines > 0 ? lines : (change.text.trim().length > 0 ? 1 : 0);
-            deleted += change.range.end.line - change.range.start.line;
+            const insertedNewlines = (change.text.match(/\n/g) || []).length;
+            added += insertedNewlines > 0 ? insertedNewlines : (change.text.trim().length > 0 ? 1 : 0);
+
+            // Count multi-line range deletions (newlines removed)
+            const linesInRange = change.range.end.line - change.range.start.line;
+            if (linesInRange > 0) {
+                // Net lines removed = lines spanned by the old range minus lines in new text
+                deleted += linesInRange - insertedNewlines;
+            } else if (change.rangeLength > 0 && change.text.length < change.rangeLength) {
+                // Same-line deletion: Backspace, Delete, Ctrl+D, etc.
+                // Count every such event as 1 deletion unit so heartbeats aren't skipped
+                deleted += 1;
+                hasAnyDeletion = true;
+            }
 
             // ── TASK 6: Undo heuristic ───────────────────────────────
             // An undo typically replaces text with shorter/empty text in the same range
@@ -194,7 +206,8 @@ export class AclasTracker {
 
         if (!this.isActive || !this.token || !this.currentProject) return;
 
-        // No keystrokes — handle idle escalation
+        // No keystrokes AND no deletions — handle idle escalation
+        // Note: linesDeleted > 0 now also catches same-line backspace/delete activity
         if (this.linesAdded === 0 && this.linesDeleted === 0) {
             this.consecutiveIdleSkips++;
             console.log(`ACLAS: No keystrokes since last tick, skipping heartbeat. (${this.consecutiveIdleSkips})`);
