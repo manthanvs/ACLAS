@@ -21,6 +21,11 @@ media/
 staticfiles/
 /static/
 
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
 # Virtual environments
 .env
 .venv
