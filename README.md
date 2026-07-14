@@ -77,7 +77,7 @@ stress_score = min(100, raw)
 
 | Dashboard | Login | Stats |
 |---|---|---|
-| _(paste screenshot)_ | _(paste screenshot)_ | _(paste screenshot)_ |
+| ![dashboard](screenshots/dashboard.png) | ![login](screenshots/login.png) | ![stats](screenshots/stats.png) |
 
 ---
 

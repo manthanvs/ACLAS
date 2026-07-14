@@ -2,5 +2,7 @@
 # Install with: pip install -r requirements-test.txt
 pytest>=7.4
 pytest-django>=4.7
+pytest-cov>=4.0
 djangorestframework>=3.14
 django-allauth>=0.60
+python-dotenv>=1.0
