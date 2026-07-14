@@ -1,0 +1,6 @@
+# Test dependencies for ACLAS backend
+# Install with: pip install -r requirements-test.txt
+pytest>=7.4
+pytest-django>=4.7
+djangorestframework>=3.14
+django-allauth>=0.60
