@@ -112,3 +112,9 @@ def telemetry_event(user):
         undo_count=2,
         terminal_errors=1,
     )
+
+
+@pytest.fixture(autouse=True)
+def _fast_hasher(settings):
+    """MD5 hasher: password hashing dominated the suite runtime (75s)."""
+    settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]

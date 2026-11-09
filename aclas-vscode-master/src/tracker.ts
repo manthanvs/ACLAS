@@ -44,7 +44,6 @@ export class AclasTracker {
     private previousErrorMessages: Set<string> = new Set();
 
     // Build-failure-loop detection
-    private lastBuildHadErrors: boolean = false;
     private consecutiveBuildFailures: number = 0;
 
     // Disposable subscriptions created outside the constructor
@@ -73,9 +72,11 @@ export class AclasTracker {
 
     private setupListeners() {
         // ── Existing listeners ────────────────────────────────────────
-        vscode.workspace.onDidChangeTextDocument(this.onTextChange, this);
-        vscode.window.onDidChangeActiveTextEditor(this.onEditorChange, this);
-        vscode.window.onDidChangeTextEditorSelection(this.onActivity, this);
+        this.disposables.push(
+            vscode.workspace.onDidChangeTextDocument(this.onTextChange, this),
+            vscode.window.onDidChangeActiveTextEditor(this.onEditorChange, this),
+            vscode.window.onDidChangeTextEditorSelection(this.onActivity, this),
+        );
 
         // ── TASK 1 & 2: Diagnostics & repeated-error tracking ────────
         this.disposables.push(
@@ -360,7 +361,6 @@ export class AclasTracker {
             this.consecutiveBuildFailures = 0;
         }
 
-        this.lastBuildHadErrors = hasErrors;
     }
 
     // ── TASK 7: Terminal error detection ─────────────────────────────

@@ -50,11 +50,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/manthanvs/aclas"
+    "url": "https://github.com/manthanvs/ACLAS"
   },
-  "homepage": "https://github.com/manthanvs/aclas#readme",
+  "homepage": "https://github.com/manthanvs/ACLAS#readme",
   "bugs": {
-    "url": "https://github.com/manthanvs/aclas/issues"
+    "url": "https://github.com/manthanvs/ACLAS/issues"
   },
   "license": "MIT",
   "scripts": {
@@ -63,11 +63,7 @@
     "watch": "webpack --watch --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
     "package": "webpack --mode production --config ./build/node-extension.webpack.config.js"
   },
-  "dependencies": {
-    "got": "14.4.7"
-  },
   "devDependencies": {
-    "@types/got": "^9.6.12",
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.99.0",
     "@vscode/vsce": "^3.6.0",

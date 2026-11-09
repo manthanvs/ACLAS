@@ -15,14 +15,13 @@ def dashboard_view(request):
     api_token, _ = Token.objects.get_or_create(user=request.user)
     events = TelemetryEvent.objects.filter(user=request.user)
 
-    total_events = events.count()
-    total_additions = events.aggregate(Sum('lines_added'))['lines_added__sum'] or 0
-    total_deletions = events.aggregate(Sum('lines_deleted'))['lines_deleted__sum'] or 0
-    total_active_secs = events.aggregate(Sum('active_seconds'))['active_seconds__sum'] or 0
-    total_idle_secs = events.aggregate(Sum('idle_seconds'))['idle_seconds__sum'] or 0
-
-    # ── Stress Metric Aggregates ───────────────────────────────────────
-    stress_agg = events.aggregate(
+    # One aggregate query for every total (was 3 round-trips)
+    s = events.aggregate(
+        total_events=Count('id'),
+        additions=Sum('lines_added'),
+        deletions=Sum('lines_deleted'),
+        active=Sum('active_seconds'),
+        idle=Sum('idle_seconds'),
         total_errors=Sum('errors'),
         total_repeated=Sum('repeated_errors'),
         total_builds=Sum('build_runs'),
@@ -31,7 +30,11 @@ def dashboard_view(request):
         total_undos=Sum('undo_count'),
         total_terminal=Sum('terminal_errors'),
     )
-    s = stress_agg
+    total_events = s['total_events']
+    total_additions = s['additions'] or 0
+    total_deletions = s['deletions'] or 0
+    total_active_secs = s['active'] or 0
+    total_idle_secs = s['idle'] or 0
     total_errors    = s['total_errors']    or 0
     total_repeated  = s['total_repeated']  or 0
     total_builds    = s['total_builds']    or 0

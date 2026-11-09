@@ -35,37 +35,6 @@
     });
   }
 
-  /* ---- Page Loader ---- */
-  const loader = document.getElementById('aclas-loader');
-  if (loader) {
-    window.addEventListener('load', () => {
-      setTimeout(() => loader.classList.add('hidden'), 400);
-    });
-  }
-
-  /* ---- Cursor Glow ---- */
-  const cursorGlow = document.getElementById('cursor-glow');
-  if (cursorGlow) {
-    document.addEventListener('mousemove', (e) => {
-      cursorGlow.style.left = e.clientX + 'px';
-      cursorGlow.style.top  = e.clientY + 'px';
-    });
-  }
-
-  /* ---- Parallax Orbs (Dashboard only) ---- */
-  const p1 = document.querySelector('.p-orb-1');
-  const p2 = document.querySelector('.p-orb-2');
-  if (p1 && p2) {
-    document.addEventListener('mousemove', (e) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;
-      const dy = (e.clientY - cy) / cy;
-      p1.style.transform = `translate(${dx * 18}px, ${dy * 18}px)`;
-      p2.style.transform = `translate(${-dx * 24}px, ${-dy * 24}px)`;
-    });
-  }
-
   /* ---- Copy Token ---- */
   document.querySelectorAll('[data-copy]').forEach(btn => {
     btn.addEventListener('click', () => {

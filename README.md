@@ -49,7 +49,7 @@
 - 🍩 Chart.js charts: Top Projects (bar) + Language Distribution (doughnut)
 - 🔍 Stats page with live search + language filter
 - ⚙️ Settings page with API token display + profile management
-- ✨ Cursor glow, parallax orbs, entrance animations, hover lift effects
+- ✨ Subtle entrance animations and hover effects
 
 ---
 

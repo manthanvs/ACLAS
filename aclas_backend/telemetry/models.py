@@ -23,6 +23,9 @@ class TelemetryEvent(models.Model):
     undo_count = models.IntegerField(default=0)       # detected undo operations
     terminal_errors = models.IntegerField(default=0)  # failed terminal commands
 
+    class Meta:
+        indexes = [models.Index(fields=['user', '-timestamp'])]
+
     @property
     def stress_score(self):
         """Weighted stress score (0–100). Higher = more stress signals."""
