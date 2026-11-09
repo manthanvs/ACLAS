@@ -145,7 +145,7 @@ If you change `.env`, Reload is also required.
 
 ## Keeping the free app alive
 
-Free PythonAnywhere web apps are disabled after a period unless you extend them. Roughly every few weeks to 3 months, open the **Web** tab and click **Run until ... from today**. Put a calendar reminder in; PythonAnywhere also emails a warning beforehand. Check their current policy, as the interval can change.
+Free PythonAnywhere web apps are disabled after a period unless you extend them. Every month (your Web tab shows the exact date), open the **Web** tab and click **Run until 1 month from today**. Put a calendar reminder in; PythonAnywhere also emails a warning beforehand. Check their current policy, as the interval can change.
 
 ---
 
