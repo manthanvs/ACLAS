@@ -40,7 +40,9 @@
     </div>
     {% endif %}
 
-    <!-- Google OAuth -->
+    <!-- Google OAuth (shown only when a Google app is configured in admin) -->
+    {% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
     <form action="{% provider_login_url 'google' %}" method="post">
       {% csrf_token %}
       <button type="submit" class="btn btn-google btn-full">
@@ -59,6 +61,7 @@
       <span class="divider-text">or register with email</span>
       <div class="divider-line"></div>
     </div>
+    {% endif %}
 
     <!-- Registration Form -->
     <form method="POST" action="{% url 'account_signup' %}">
